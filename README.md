@@ -1,4 +1,4 @@
-# Quasar App (mvideo_eds)
+# Quasar App (eds)
 
 A Quasar Framework app
 
