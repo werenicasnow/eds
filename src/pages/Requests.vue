@@ -162,7 +162,7 @@
     </div>
   </div>
 
-  <RequestDialog :show-dialog="isShowDialog"/>
+  <RequestDialog v-model="isShowDialog" @submit="save"/>
 </template>
 
 <script lang="ts">
@@ -177,7 +177,8 @@
 
       return {
         isShowDialog,
-        showDialog: () => isShowDialog.value = true
+        showDialog: () => isShowDialog.value = true,
+        save: () => { console.log('save form') }
       }
     },
     components: { RequestDialog },
@@ -187,9 +188,7 @@
 <style lang="sass">
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap')
 
-$purple-color: #6153CC
-$green-color: #6EB61D
-$base-text-color: #2A2D43
+@import "src/css/custom.variables"
 
 .container
   background: #F8F8F9

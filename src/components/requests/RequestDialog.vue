@@ -1,35 +1,31 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide" v-model="dialogDisplay">
+  <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
-      Карточка
-      <!--
-        ...content
-        ... use q-card-section for it?
-      -->
+      <q-form @submit="$emit('submit')">
+        <q-card-section>
+          Форма
+        </q-card-section>
+        <!--
+          ...content
+          ... use q-card-section for it?
+        -->
 
-      <!-- buttons example -->
-      <q-card-actions align="right">
-        <q-btn color="primary" label="OK" @click="onOKClick" />
-        <q-btn color="primary" label="Cancel" @click="onCancelClick" />
-      </q-card-actions>
-    </q-card>
+        <!-- buttons example -->
+        <q-card-actions align="right">
+          <q-btn label="Отмена" class="btn btn-default" @click="onCancelClick" />
+          <q-btn label="Отправить" class="btn btn-primary" type="submit" @click="onOKClick" />
+        </q-card-actions>
+      </q-form>
+      </q-card>
   </q-dialog>
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent } from 'vue';
   import { useDialogPluginComponent } from 'quasar'
 
   export default defineComponent({
     name: 'RequestDialog',
-
-    props: {
-      showDialog: {
-        readonly: false,
-        type: Boolean,
-        required: true
-      },
-    },
 
     emits: [
       // REQUIRED; need to specify some events that your
@@ -37,11 +33,8 @@
       ...useDialogPluginComponent.emits
     ],
 
-    setup(props) {
+    setup() {
       const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
-      const dialogDisplay = ref(props.showDialog);
-      //watch(props.showDialog, () => dialogDisplay.value = props.showDialog);
-      //watch(() => props.showDialog, () => dialogDisplay.value = props.showDialog);
 
       return {
         // This is REQUIRED;
@@ -62,12 +55,34 @@
 
         // we can passthrough onDialogCancel directly
         onCancelClick: onDialogCancel,
-        dialogDisplay,
       }
     }
   });
 </script>
 
-<style scoped>
+<style scoped lang="sass">
+@import "src/css/custom.variables"
 
+.btn
+  justify-content: center
+  align-items: center
+  padding: 9px 27px
+  border-radius: 4px
+  font-style: normal
+  font-weight: bold
+  font-size: 0.875rem
+  line-height: 16px
+  letter-spacing: 1.25px
+  text-transform: uppercase
+
+.btn:before
+  box-shadow: none
+
+.btn-primary
+  background: $purple-color !important
+  color: white !important
+
+.btn-default
+  background: white
+  color: $base-text-color
 </style>
