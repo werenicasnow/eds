@@ -104,7 +104,7 @@
     <div class="request-card">
       <div class="request-card__header">
         Заявки на выдачу ЭЦП
-        <q-btn class="btn new_request-btn" label="Заявка" icon="add" @click="showDialog"/>
+        <q-btn class="btn new_request-btn" label="Заявка" icon="add" @click="showDialog" />
       </div>
 
       <div class="request-card__list">
@@ -161,27 +161,37 @@
       </div>
     </div>
   </div>
-
-  <RequestDialog v-model="isShowDialog" @submit="save"/>
 </template>
 
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
   import RequestDialog from 'components/requests/RequestDialog.vue';
+  import { useQuasar } from 'quasar'
 
   export default defineComponent({
     name: 'Requests',
     setup() {
       const isShowDialog = ref(false);
+      const $q = useQuasar();
 
+      const showDialog = () => {
+        $q.dialog({
+          title: 'Заявка на выпуск ЭЦП',
+          component: RequestDialog,
+        }).onOk(() => {
+           console.log('OK')
+        }).onCancel(() => {
+           console.log('Cancel')
+        }).onDismiss(() => {
+          // console.log('I am triggered on both OK and Cancel')
+        })
+      };
 
       return {
         isShowDialog,
-        showDialog: () => isShowDialog.value = true,
-        save: () => { console.log('save form') }
+        showDialog,
       }
     },
-    components: { RequestDialog },
   });
 </script>
 

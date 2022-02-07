@@ -6,3 +6,11 @@ export interface Todo {
 export interface Meta {
   totalCount: number;
 }
+
+export interface IRequestData {
+  inn: string | null
+  passport: File | null
+  snils: File | null
+  powerOfAttorneyMvm: File | null
+  otherDocs: File | null
+}
