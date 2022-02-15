@@ -1,0 +1,49 @@
+[
+  {
+    "id": "1",
+    "firstName": "Василий",
+    "lastName": "Иванов",
+    "middleName": "Александрович"
+  },
+  {
+    "id": "2",
+    "firstName": "Николай",
+    "lastName": "Звягинцев",
+    "middleName": "Александрович"
+  },
+  {
+    "id": "3",
+    "firstName": "Алекскей",
+    "lastName": "Петров",
+    "middleName": "Михайлович"
+  },
+  {
+    "id": "4",
+    "firstName": "Станислав",
+    "lastName": "Фадеев"
+  },
+  {
+    "id": "5",
+    "firstName": "Андрей",
+    "lastName": "Куплинов",
+    "middleName": "Алексеевич"
+  },
+  {
+    "id": "6",
+    "firstName": "Сергей",
+    "lastName": "Петров",
+    "middleName": "Алексеевич"
+  },
+  {
+    "id": "7",
+    "firstName": "Сергей",
+    "lastName": "Иванов",
+    "middleName": "Сергеевич"
+  },
+  {
+    "id": "8",
+    "firstName": "Михаил",
+    "lastName": "Станиславский",
+    "middleName": "Юрьевич"
+  }
+]

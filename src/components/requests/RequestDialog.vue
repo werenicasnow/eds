@@ -8,8 +8,8 @@
           <div class="row-form">
             <q-input outlined v-model="requestData.inn" label="ИНН" />
           </div>
-          <div class="row-form base-docs">
-            <div class="block base-docs__col">
+          <div class="row-form base-docs row">
+            <div class="block base-docs__col col-md-4">
               <q-file outlined v-model="requestData.passport" label="Паспорт" @update:model-value="updatePassportFile">
                 <template v-slot:append>
                   <q-avatar>
@@ -17,11 +17,14 @@
                   </q-avatar>
                 </template>
               </q-file>
-              <div v-if="passportUrl" class="row-form__preview">
-                <img :src="passportUrl">
+              <div v-if="passportUrl">
+                <a href="#" class="row-form__preview">
+                  <img :src="passportUrl"/>
+                  <span class="preview__content"><q-icon name="delete_outline" class="preview__btn" size="20px"/></span>
+                </a>
               </div>
             </div>
-            <div class="block base-docs__col">
+            <div class="block base-docs__col col-md-4">
               <q-file outlined v-model="requestData.snils" label="СНИЛС" @update:model-value="updateSnilsFile">
                 <template v-slot:append>
                   <q-avatar>
@@ -29,11 +32,14 @@
                   </q-avatar>
                 </template>
               </q-file>
-              <div v-if="snilsUrl" class="row-form__preview">
-                <img :src="snilsUrl">
+              <div v-if="snilsUrl">
+                <a href="#" class="row-form__preview row-form__preview">
+                  <img :src="snilsUrl"/>
+                  <span class="preview__content"><q-icon name="delete_outline" class="preview__btn" size="20px"/></span>
+                </a>
               </div>
             </div>
-            <div class="block base-docs__col">
+            <div class="block base-docs__col col-md-4">
               <q-file outlined v-model="requestData.powerOfAttorneyMvm" label="Доверенность" @update:model-value="updatePowerOfAttorneyMvmFile">
                 <template v-slot:append>
                   <q-avatar>
@@ -41,8 +47,11 @@
                   </q-avatar>
                 </template>
               </q-file>
-              <div v-if="powerOfAttorneyMvmUrl" class="row-form__preview">
-                <img :src="powerOfAttorneyMvmUrl">
+              <div v-if="powerOfAttorneyMvmUrl">
+                <a href="#" class="row-form__preview row-form__preview">
+                  <img :src="powerOfAttorneyMvmUrl"/>
+                  <span class="preview__content"><q-icon name="delete_outline" class="preview__btn" size="20px"/></span>
+                </a>
               </div>
             </div>
           </div>
@@ -191,18 +200,39 @@
 .row-form
   margin-bottom: 30px
 
-  &__preview img
+  &__preview
+    display: block
+    position: relative
     border: 1px solid #B5B5B5
     box-sizing: border-box
-    max-width: 184px
     margin-top: 20px
-    overflow: hidden
+
+    img
+      max-width: 100%
+
+    .preview__content
+      position: absolute
+      top: 0
+      left: 0
+      right: 0
+      bottom: 0
+      background: rgba(0,0,0,.5)
+      opacity: 0
+
+    .preview__content:hover
+      opacity: 1
+
+    .preview__btn
+      position: relative
+      top: calc(50% - 10px)
+      left: calc(50% - 10px)
+      color: white
 
 .base-docs
   display: flex
 
   &__col:not(:last-child)
-    margin-right: 30px
+    padding-right: 30px
 
 @media (max-width: 600px)
   .request-dialog-card

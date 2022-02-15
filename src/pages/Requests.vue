@@ -1,75 +1,43 @@
 <template>
   <div class="container">
+    {{$store.getters['requests/getRequestsJoinPersons']}}
     <div class="header">Корпоративный удостоверяющий центр</div>
 
-    <div class="sub-header">Заявки и ЭЦП</div>
+    <div class="tabs">
+      <q-tabs v-model="activeTab">
+        <q-tab name="requests" label="Заявки и ЭЦП" v-if="!isAdmin"/>
+        <template v-if="isAdmin">
+          <q-tab name="requestsAdmin" label="Заявки" />
+          <q-tab name="tasks" label="Задачи">
+            <q-badge color="red" rounded floating>2</q-badge>
+          </q-tab>
+        </template>
+      </q-tabs>
+    </div>
 
-    <div class="request-card eds">
-      <div class="request-card__header">Электронные ключи</div>
+    <div v-if="activeTab === 'requests'">
+      <div class="request-card">
+        <div class="request-card__header">Электронные ключи</div>
 
-      <div class="request-card__list">
-        <q-list>
-          <q-expansion-item
-            switch-toggle-side
-            expand-icon-toggle
-            expand-separator1
-            expand-icon="chevron_right"
-            expanded-icon="expand_more"
-          >
-            <template v-slot:header>
-              <q-item-section>
-                ЭЦП КЛЮЧ 2
-              </q-item-section>
+        <div class="request-card__list">
+          <q-list>
+            <q-expansion-item
+              switch-toggle-side
+              expand-icon-toggle
+              expand-icon="chevron_right"
+              expanded-icon="expand_more"
+              expand-icon-class="text-purple"
+            >
+              <template v-slot:header>
+                <q-item-section>
+                  ЭЦП КЛЮЧ 2
+                </q-item-section>
 
-              <q-item-section side class="green-color">
-                Действующий сертификат
-              </q-item-section>
-            </template>
+                <q-item-section side class="green-color">
+                  Действующий сертификат
+                </q-item-section>
+              </template>
 
-            <q-card>
-              <q-card-section class="info">
-                <div class="row">
-                  <div class="col-6 col-md-6 col-sm-8">
-                    <div class="row">
-                      <div class="col">Владелец:</div>
-                      <div class="col text-bold">Иванов Иван Иванович</div>
-                    </div>
-                    <div class="row">
-                      <div class="col">Карточка доступа к МВС:</div>
-                      <a href="#" class="col link">Ссылка</a>
-                    </div>
-                    <div class="row">
-                      <div class="col">Серийный номер:</div>
-                      <div class="col serial">tyuhgj546l755j88mg57789l</div>
-                    </div>
-                  </div>
-
-                  <div class="col-6 col-md-6 col-sm-4 text-right">
-                    <span>Действителен: </span>
-                    <span class="text-bold">с 01.01.2022 по 01.01.2023</span>
-                  </div>
-                </div>
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
-
-          <q-expansion-item
-            switch-toggle-side
-            expand-icon-toggle
-            expand-separator
-            expand-icon="chevron_right"
-            expanded-icon="expand_more"
-          >
-            <template v-slot:header>
-              <q-item-section>
-                ЭЦП КЛЮЧ 1
-              </q-item-section>
-
-              <q-item-section side class="red-color">
-                Истек срок сертификата
-              </q-item-section>
-            </template>
-            <q-card>
               <q-card>
                 <q-card-section class="info">
                   <div class="row">
@@ -95,84 +63,301 @@
                   </div>
                 </q-card-section>
               </q-card>
-            </q-card>
-          </q-expansion-item>
-        </q-list>
+            </q-expansion-item>
+
+            <q-expansion-item
+              switch-toggle-side
+              expand-icon-toggle
+              expand-separator
+              expand-icon="chevron_right"
+              expanded-icon="expand_more"
+              expand-icon-class="text-purple"
+            >
+              <template v-slot:header>
+                <q-item-section>
+                  ЭЦП КЛЮЧ 1
+                </q-item-section>
+
+                <q-item-section side class="red-color">
+                  Истек срок сертификата
+                </q-item-section>
+              </template>
+              <q-card>
+                <q-card>
+                  <q-card-section class="info">
+                    <div class="row">
+                      <div class="col-6 col-md-6 col-sm-8">
+                        <div class="row">
+                          <div class="col">Владелец:</div>
+                          <div class="col text-bold">Иванов Иван Иванович</div>
+                        </div>
+                        <div class="row">
+                          <div class="col">Карточка доступа к МВС:</div>
+                          <a href="#" class="col link">Ссылка</a>
+                        </div>
+                        <div class="row">
+                          <div class="col">Серийный номер:</div>
+                          <div class="col serial">tyuhgj546l755j88mg57789l</div>
+                        </div>
+                      </div>
+
+                      <div class="col-6 col-md-6 col-sm-4 text-right">
+                        <span>Действителен: </span>
+                        <span class="text-bold">с 01.01.2022 по 01.01.2023</span>
+                      </div>
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+        </div>
       </div>
-    </div>
 
-    <div class="request-card">
-      <div class="request-card__header">
-        Заявки на выдачу ЭЦП
-        <q-btn class="btn new_request-btn" label="Заявка" icon="add" @click="showDialog" />
-      </div>
+      <div class="request-card">
+        <div class="request-card__header">
+          Заявки на выдачу ЭЦП
+          <q-btn class="btn new_request-btn" label="Заявка" icon="add" @click="showDialog" />
+        </div>
 
-      <div class="request-card__list">
-        <q-list>
-          <q-expansion-item
-            switch-toggle-side
-            expand-icon-toggle
-            expand-separator1
-            expand-icon="chevron_right"
-            expanded-icon="expand_more"
-          >
-            <template v-slot:header>
-              <q-item-section>
-                Заявка на выпуск сертификата
-              </q-item-section>
+        <div class="request-card__list">
+          <q-list>
+            <q-expansion-item
+              switch-toggle-side
+              expand-icon-toggle
+              expand-separator1
+              expand-icon="chevron_right"
+              expanded-icon="expand_more"
+              expand-icon-class="text-purple"
+            >
+              <template v-slot:header>
+                <q-item-section>
+                  Заявка на выпуск сертификата
+                </q-item-section>
 
-              <q-item-section side class="green-color">
-                <span class="status green-bgr">Сертификат выпущен</span>
-              </q-item-section>
-            </template>
+                <q-item-section side class="green-color">
+                  <span class="status green-bgr">Сертификат выпущен</span>
+                </q-item-section>
+              </template>
 
-            <q-card>
-              <q-card-section class="info">
-                ...
-              </q-card-section>
-            </q-card>
-          </q-expansion-item>
-
-          <q-expansion-item
-            switch-toggle-side
-            expand-icon-toggle
-            expand-separator
-            expand-icon="chevron_right"
-            expanded-icon="expand_more"
-          >
-            <template v-slot:header>
-              <q-item-section>
-                Заявка на выпуск сертификата
-              </q-item-section>
-
-              <q-item-section side>
-                <span class="status dark-red-bgr">Отклонена</span>
-              </q-item-section>
-            </template>
-            <q-card>
               <q-card>
                 <q-card-section class="info">
                   ...
                 </q-card-section>
               </q-card>
-            </q-card>
-          </q-expansion-item>
-        </q-list>
+            </q-expansion-item>
+
+            <q-expansion-item
+              switch-toggle-side
+              expand-icon-toggle
+              expand-separator
+              expand-icon="chevron_right"
+              expanded-icon="expand_more"
+              expand-icon-class="text-purple"
+            >
+              <template v-slot:header>
+                <q-item-section>
+                  Заявка на выпуск сертификата
+                </q-item-section>
+
+                <q-item-section side>
+                  <span class="status dark-red-bgr">Отклонена</span>
+                </q-item-section>
+              </template>
+              <q-card>
+                <q-card>
+                  <q-card-section class="info-reject">
+                    Сообщение от Администратора:<span class="info-reject__reason">вы загрузили не свой паспорт</span>
+                  </q-card-section>
+                </q-card>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="activeTab === 'requestsAdmin'">
+      <div class="request-card">
+        <div class="request-card__header">Заявки на выдачу ЭЦП</div>
+
+        <div class="flex request-card__content">
+          <div class="request-card__content__grid">
+            <q-table
+              :rows="$store.getters['requests/getRequests']"
+              :columns="columnsRequests"
+              row-key="id"
+              hide-pagination
+              flat
+              auto-width
+              v-model:pagination="pagination"
+              table-header-class="request-card__content__grid__title"
+              table-class="request-card__content__grid__body"
+              :card-style="{ borderRadius: '12px' }"
+            >
+              <template v-slot:body-cell-status="props">
+                <q-td :props="props" :class="'text-' + statusList.find(c => c.label === props.row.status).color">
+                  {{ props.row.status }}
+                </q-td>
+              </template>
+
+              <template v-slot:body-cell-actions="props">
+                <q-td :props="props">
+                  <q-icon name="visibility" size="24px" class="actions-icon"/>
+                </q-td>
+              </template>
+            </q-table>
+          </div>
+
+          <div class="request-card__content__filter">
+            <q-input label="поиск по фамилии" outlined class="input-field" dense>
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+
+            <div class="status-list">
+              <q-option-group
+                v-model="statusFilter"
+                :options="statusList"
+                type="checkbox"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="activeTab === 'tasks'">
+      <div class="request-card">
+        <div class="request-card__header">
+          Задачи
+        </div>
+
+        <div class="request-card__list">
+          <q-list>
+            <q-expansion-item
+              expand-icon-toggle
+              expand-separator
+              expand-icon="chevron_right"
+              expanded-icon="expand_more"
+              expand-icon-class="text-purple"
+            >
+              <template v-slot:header>
+                <q-item-section>
+                  <div class="task-item">
+                    Согласование заявки <span>ПетроВ Михаил Иванович</span>
+                  </div>
+                </q-item-section>
+              </template>
+
+              <q-card>
+                <q-card-section class="info">
+                  ...
+                </q-card-section>
+              </q-card>
+            </q-expansion-item>
+
+            <q-expansion-item
+              expand-icon-toggle
+              expand-separator
+              expand-icon="chevron_right"
+              expanded-icon="expand_more"
+              expand-icon-class="text-purple"
+              caption-lines="1"
+            >
+              <template v-slot:header>
+                <q-item-section>
+                  <div class="task-item">
+                    Согласование заявки <span>Иванов Иван Иванович</span>
+                  </div>
+                </q-item-section>
+              </template>
+              <q-card>
+                <q-card>
+                  <q-card-section class="info">
+                    ...
+                  </q-card-section>
+                </q-card>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent, ref, onMounted } from 'vue';
   import RequestDialog from 'components/requests/RequestDialog.vue';
   import { useQuasar } from 'quasar'
+  import { useStore } from 'src/store';
 
   export default defineComponent({
     name: 'Requests',
     setup() {
       const isShowDialog = ref(false);
       const $q = useQuasar();
+      const isAdmin = true;
+      const columnsRequests = [
+        { name: 'id', label: 'ИД', field: 'id', sortable: true, align: 'left' },
+        { name: 'employee', label: 'От', field: 'employee', sortable: true, align: 'left' },
+        { name: 'date', label: 'Дата заявки', field: 'date', sortable: true, align: 'left' },
+        { name: 'status', label: 'Статус заявки', field: 'status', align: 'left' },
+        { name: 'actions', label: 'Действия', align: 'center' },
+      ];
+
+      const rowsRequests = [
+        {
+          id: 1,
+          employee: 'Федоров Сергей Михайлович',
+          date: '16.02.2000',
+          status: 'На согласовании',
+        },
+        {
+          id: 2,
+          employee: 'Федоров Сергей Михайлович',
+          date: '16.02.2000',
+          status: 'На согласовании',
+        },
+        {
+          id: 3,
+          employee: 'Михайлов Николай Сергеевич',
+          date: '16.02.2000',
+          status: 'В работе',
+        },
+        {
+          id: 4,
+          employee: 'Петров Михаил Михайлович',
+          date: '16.02.2000',
+          status: 'Отклонена',
+        },
+      ];
+
+      const statusFilter = ref(['На согласовании', 'В работе', 'Отклонена', 'Сертификат выпущен']);
+      const statusList = [
+        {
+          label: 'На согласовании',
+          value: 'На согласовании',
+          color: 'purple',
+        },
+        {
+          label: 'В работе',
+          value: 'В работе',
+          color: 'yellow',
+        },
+        {
+          label: 'Отклонена',
+          value: 'Отклонена',
+          color: 'red',
+        },
+        {
+          label: 'Сертификат выпущен',
+          value: 'Сертификат выпущен',
+          color: 'green',
+        },
+      ];
 
       const showDialog = () => {
         $q.dialog({
@@ -187,9 +372,26 @@
         })
       };
 
+      const $store = useStore();
+
+      onMounted(async () => {
+        await $store.dispatch('persons/setPersons');
+        await $store.dispatch('requests/setRequests');
+      });
+
       return {
         isShowDialog,
         showDialog,
+        isAdmin,
+        activeTab: ref(isAdmin ? 'requestsAdmin' : 'requests'),
+        columnsRequests,
+        rowsRequests,
+        statusFilter,
+        statusList,
+        pagination: {
+          page: 1,
+          rowsPerPage: 0 // 0 means all rows
+        }
       }
     },
   });
@@ -223,22 +425,21 @@
   padding: 10px 21px
   margin-bottom: 40px
 
-.sub-header
+.tabs
   font-size: 0.875rem
   font-weight: 400
-  text-align: center
   letter-spacing: 0.25px
   color: $purple-color
-  flex: none
-  order: 0
-  flex-grow: 0
-  margin: 43px 0 39px 18px
-  padding: 0 6px 10px 6px
-  border-bottom: 2px solid $purple-color
-  border-left: 6px
-  border-right: 6px
-  line-height: 20px
+  margin: 43px 0 39px
+  line-height: 20
   width: fit-content
+
+  .q-tab
+    padding: 0 30px
+    text-transform: none
+
+  .bg-red
+    background: #FF5F5F !important
 
 .request-card
   margin-bottom: 34px
@@ -291,10 +492,64 @@
       .row
         margin-bottom: 16px
 
+    .info-reject
+      line-height: 24px
+      font-size: 0.875rem
+      color: #9C9C9C
+
+      &__reason
+        color: $red-color
+        text-transform: uppercase
+        margin-left: 8px
+
     .status
       color: white
       border-radius: 12px
       padding: 8px 10px
+
+  &__content
+    &__grid
+      font-size: 0.875rem
+      letter-spacing: 0.25px
+      border-radius: 12px
+      margin-right: 20px
+
+      &__title
+        line-height: 24px
+        font-weight: 500
+        background: #E5E6E8
+
+      &__body
+        tr
+          height: 63px
+
+        tr:nth-child(even)
+          background-color: #E5E6E8
+
+        .actions-icon
+          color: $purple-color
+          cursor: pointer
+
+    &__filter
+      background-color: white
+      padding: 17px
+      border-radius: 12px
+      max-height: 250px
+
+      .input-field
+        margin-bottom: 20px
+
+  .text-purple
+    color: $purple-color !important
+
+  .text-yellow
+    color: #EEBA00 !important
+
+  .text-red
+    color: #EC1C24 !important
+
+  .text-green
+    color: #72BE44 !important
 
   .green-color
     color: $green-color
@@ -306,10 +561,14 @@
     background: $green-color
 
   .dark-red-bgr
-    background: #D62828
+    background: $red-color
 
   .btn:hover
     opacity: 0.9
+
+  .task-item
+    span
+      color: $purple-color
 
 @media (max-width: 600px)
   .container
