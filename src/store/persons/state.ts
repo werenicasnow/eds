@@ -1,8 +1,8 @@
 export interface IPerson {
-  id: string,
+  id: number,
   firstName: string,
   lastName: string,
-  middleName?: string,
+  middleName: string,
 }
 
 export interface IPersons {

@@ -21,6 +21,8 @@
         <div class="request-card__list">
           <q-list>
             <q-expansion-item
+              v-for="digitalSignature in digitalSignatures"
+              :key="digitalSignature.id"
               switch-toggle-side
               expand-icon-toggle
               expand-icon="chevron_right"
@@ -29,11 +31,11 @@
             >
               <template v-slot:header>
                 <q-item-section>
-                  ЭЦП КЛЮЧ 2
+                  {{ digitalSignature.name }}
                 </q-item-section>
 
-                <q-item-section side class="green-color">
-                  Действующий сертификат
+                <q-item-section side :class="digitalSignatureStatusList.find(c => c.label === digitalSignature.status).color  + '-color'">
+                  {{ digitalSignature.status }}
                 </q-item-section>
               </template>
 
@@ -43,70 +45,24 @@
                     <div class="col-6 col-md-6 col-sm-8">
                       <div class="row">
                         <div class="col">Владелец:</div>
-                        <div class="col text-bold">Иванов Иван Иванович</div>
+                        <div class="col text-bold">{{ employeeFio(digitalSignature.owner) }}</div>
                       </div>
                       <div class="row">
                         <div class="col">Карточка доступа к МВС:</div>
-                        <a href="#" class="col link">Ссылка</a>
+                        <a :href="digitalSignature.MVCAccessCard" class="col link">Ссылка</a>
                       </div>
                       <div class="row">
                         <div class="col">Серийный номер:</div>
-                        <div class="col serial">tyuhgj546l755j88mg57789l</div>
+                        <div class="col serial">{{ digitalSignature.serialNumber }}</div>
                       </div>
                     </div>
 
                     <div class="col-6 col-md-6 col-sm-4 text-right">
                       <span>Действителен: </span>
-                      <span class="text-bold">с 01.01.2022 по 01.01.2023</span>
+                      <span class="text-bold">с {{digitalSignature.startDate }} по {{ digitalSignature.endDate }}</span>
                     </div>
                   </div>
                 </q-card-section>
-              </q-card>
-            </q-expansion-item>
-
-            <q-expansion-item
-              switch-toggle-side
-              expand-icon-toggle
-              expand-separator
-              expand-icon="chevron_right"
-              expanded-icon="expand_more"
-              expand-icon-class="text-purple"
-            >
-              <template v-slot:header>
-                <q-item-section>
-                  ЭЦП КЛЮЧ 1
-                </q-item-section>
-
-                <q-item-section side class="red-color">
-                  Истек срок сертификата
-                </q-item-section>
-              </template>
-              <q-card>
-                <q-card>
-                  <q-card-section class="info">
-                    <div class="row">
-                      <div class="col-6 col-md-6 col-sm-8">
-                        <div class="row">
-                          <div class="col">Владелец:</div>
-                          <div class="col text-bold">Иванов Иван Иванович</div>
-                        </div>
-                        <div class="row">
-                          <div class="col">Карточка доступа к МВС:</div>
-                          <a href="#" class="col link">Ссылка</a>
-                        </div>
-                        <div class="row">
-                          <div class="col">Серийный номер:</div>
-                          <div class="col serial">tyuhgj546l755j88mg57789l</div>
-                        </div>
-                      </div>
-
-                      <div class="col-6 col-md-6 col-sm-4 text-right">
-                        <span>Действителен: </span>
-                        <span class="text-bold">с 01.01.2022 по 01.01.2023</span>
-                      </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
               </q-card>
             </q-expansion-item>
           </q-list>
@@ -122,9 +78,10 @@
         <div class="request-card__list">
           <q-list>
             <q-expansion-item
+              v-for="userRequest in userRequests"
+              :key="userRequest.id"
               switch-toggle-side
               expand-icon-toggle
-              expand-separator1
               expand-icon="chevron_right"
               expanded-icon="expand_more"
               expand-icon-class="text-purple"
@@ -134,41 +91,19 @@
                   Заявка на выпуск сертификата
                 </q-item-section>
 
-                <q-item-section side class="green-color">
-                  <span class="status green-bgr">Сертификат выпущен</span>
+                <q-item-section side >
+                  <span class="status" :class="statusColor(taskStatusList, userRequest.status) + '-bgr'">
+                    {{ userRequest.status }}</span>
                 </q-item-section>
               </template>
 
               <q-card>
-                <q-card-section class="info">
+                <q-card-section class="info-reject" v-if="userRequest.comment">
+                  Сообщение от Администратора:<span class="info-reject__reason">{{ userRequest.comment }}</span>
+                </q-card-section>
+                <q-card-section class="info" v-else>
                   ...
                 </q-card-section>
-              </q-card>
-            </q-expansion-item>
-
-            <q-expansion-item
-              switch-toggle-side
-              expand-icon-toggle
-              expand-separator
-              expand-icon="chevron_right"
-              expanded-icon="expand_more"
-              expand-icon-class="text-purple"
-            >
-              <template v-slot:header>
-                <q-item-section>
-                  Заявка на выпуск сертификата
-                </q-item-section>
-
-                <q-item-section side>
-                  <span class="status dark-red-bgr">Отклонена</span>
-                </q-item-section>
-              </template>
-              <q-card>
-                <q-card>
-                  <q-card-section class="info-reject">
-                    Сообщение от Администратора:<span class="info-reject__reason">вы загрузили не свой паспорт</span>
-                  </q-card-section>
-                </q-card>
               </q-card>
             </q-expansion-item>
           </q-list>
@@ -183,7 +118,7 @@
         <div class="flex request-card__content">
           <div class="request-card__content__grid">
             <q-table
-              :rows="$store.getters['requests/getRequests']"
+              :rows="activeRequests"
               :columns="columnsRequests"
               row-key="id"
               hide-pagination
@@ -196,12 +131,12 @@
             >
               <template v-slot:body-cell-employee="props">
                 <q-td :props="props">
-                  {{ `${employeeFio(props.row.employee).lastName} ${employeeFio(props.row.employee).firstName} ${employeeFio(props.row.employee).middleName}` }}
+                  {{ employeeFio(props.row.employee) }}
                 </q-td>
               </template>
 
               <template v-slot:body-cell-status="props">
-                <q-td :props="props" :class="'text-' + statusList.find(c => c.label === props.row.status).color">
+                <q-td :props="props" :class="'text-' + taskStatusList.find(c => c.label === props.row.status).color">
                   {{ props.row.status }}
                 </q-td>
               </template>
@@ -224,7 +159,7 @@
             <div class="status-list">
               <q-option-group
                 v-model="statusFilter"
-                :options="statusList"
+                :options="taskStatusList"
                 type="checkbox"
               />
             </div>
@@ -262,30 +197,6 @@
                 </q-card-section>
               </q-card>
             </q-expansion-item>
-
-            <q-expansion-item
-              expand-icon-toggle
-              expand-separator
-              expand-icon="chevron_right"
-              expanded-icon="expand_more"
-              expand-icon-class="text-purple"
-              caption-lines="1"
-            >
-              <template v-slot:header>
-                <q-item-section>
-                  <div class="task-item">
-                    Согласование заявки <span>Иванов Иван Иванович</span>
-                  </div>
-                </q-item-section>
-              </template>
-              <q-card>
-                <q-card>
-                  <q-card-section class="info">
-                    ...
-                  </q-card-section>
-                </q-card>
-              </q-card>
-            </q-expansion-item>
           </q-list>
         </div>
       </div>
@@ -294,54 +205,26 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref, onMounted } from 'vue';
+  import { defineComponent, ref, onMounted, computed } from 'vue';
   import RequestDialog from 'components/requests/RequestDialog.vue';
   import { useQuasar } from 'quasar'
   import { useStore } from 'src/store';
+  import { IPerson } from 'src/store/persons/state';
 
   export default defineComponent({
     name: 'Requests',
     setup() {
       const isShowDialog = ref(false);
       const $q = useQuasar();
-      const isAdmin = true;
       const columnsRequests = [
-        { name: 'id', label: 'ИД', field: 'id', sortable: true, align: 'left' },
         { name: 'employee', label: 'От', field: 'employee', sortable: true, align: 'left' },
         { name: 'date', label: 'Дата заявки', field: 'date', sortable: true, align: 'left' },
         { name: 'status', label: 'Статус заявки', field: 'status', align: 'left' },
         { name: 'actions', label: 'Действия', align: 'center' },
       ];
 
-      const rowsRequests = [
-        {
-          id: 1,
-          employee: 'Федоров Сергей Михайлович',
-          date: '16.02.2000',
-          status: 'На согласовании',
-        },
-        {
-          id: 2,
-          employee: 'Федоров Сергей Михайлович',
-          date: '16.02.2000',
-          status: 'На согласовании',
-        },
-        {
-          id: 3,
-          employee: 'Михайлов Николай Сергеевич',
-          date: '16.02.2000',
-          status: 'В работе',
-        },
-        {
-          id: 4,
-          employee: 'Петров Михаил Михайлович',
-          date: '16.02.2000',
-          status: 'Отклонена',
-        },
-      ];
-
       const statusFilter = ref(['На согласовании', 'В работе', 'Отклонена', 'Сертификат выпущен']);
-      const statusList = [
+      const taskStatusList = [
         {
           label: 'На согласовании',
           value: 'На согласовании',
@@ -363,6 +246,18 @@
           color: 'green',
         },
       ];
+      const digitalSignatureStatusList = [
+        {
+          label: 'Действующий сертификат',
+          value: 'Действующий сертификати',
+          color: 'green',
+        },
+        {
+          label: 'Истек срок сертификата',
+          value: 'Истек срок сертификата',
+          color: 'red',
+        },
+      ];
 
       const showDialog = () => {
         $q.dialog({
@@ -379,13 +274,33 @@
 
       const $store = useStore();
 
+      const isAdmin = true;
+
       onMounted(async () => {
+        await $store.dispatch('digitalSignatures/setDigitalSignatures');
         await $store.dispatch('persons/setPersons');
         await $store.dispatch('requests/setRequests');
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
-      const employeeFio = (id: string) => $store.getters['persons/getPersons'].find(p => p.id === id);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
+      const digitalSignatures = computed(() => $store.getters['digitalSignatures/getDigitalSignatures']);
+
+      const employeeFio = (id: number) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+        const employee: IPerson = $store.getters['persons/getPerson'](id);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        return (employee) ? `${employee.lastName} ${employee.firstName} ${employee.middleName}` : ''
+      };
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-call
+      const userRequests = computed(() => $store.getters['requests/getUserRequests']);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
+      const activeRequests = computed(() => $store.getters['requests/getRequests']);
+
+      const statusColor = (statusList: { label: string, color: string }[], status: string) => {
+        const statusData = statusList.find(c => c.label === status);
+        return statusData ? statusData.color : ''
+      };
 
       return {
         isShowDialog,
@@ -393,14 +308,18 @@
         isAdmin,
         activeTab: ref(isAdmin ? 'requestsAdmin' : 'requests'),
         columnsRequests,
-        rowsRequests,
         statusFilter,
-        statusList,
+        taskStatusList,
+        digitalSignatureStatusList,
+        statusColor,
         pagination: {
           page: 1,
           rowsPerPage: 0 // 0 means all rows
         },
-        employeeFio
+        digitalSignatures,
+        employeeFio,
+        userRequests,
+        activeRequests
       }
     },
   });
@@ -569,7 +488,7 @@
   .green-bgr
     background: $green-color
 
-  .dark-red-bgr
+  .red-bgr
     background: $red-color
 
   .btn:hover

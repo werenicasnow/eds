@@ -1,8 +1,9 @@
 export interface IRequest {
-  id: string,
-  employee: string,
+  id: number,
+  employee: number,
   date: string,
   status: string,
+  comment: string
 }
 
 export interface IRequests {

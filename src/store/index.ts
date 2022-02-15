@@ -8,6 +8,7 @@ import {
 
 import persons from './persons/index'
 import requests from './requests'
+import digitalSignatures from './digital-signatures'
 //import { IPerson } from 'src/store/persons/state';
 //import { IRequest } from 'src/store/requests/state';
 
@@ -47,7 +48,8 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore<StateInterface>({
     modules: {
       persons,
-      requests
+      requests,
+      digitalSignatures
     },
 
     // enable strict mode (adds overhead!)

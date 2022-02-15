@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "ЭЦП КЛЮЧ 2",
+    "status": "Действующий сертификат",
+    "owner": 1,
+    "MVCAccessCard": "",
+    "serialNumber": "Tyuhgj546l755j88mg57789l",
+    "startDate": "01.01.2022",
+    "endDate": "01.01.2023"
+  },
+  {
+    "id": 2,
+    "name": "ЭЦП КЛЮЧ 1",
+    "status": "Истек срок сертификата",
+    "owner": 2,
+    "MVCAccessCard": "",
+    "serialNumber": "Tyuhgj546l755j88mg57789l",
+    "startDate": "13.05.2022",
+    "endDate": "16.05.2023"
+  }
+]
