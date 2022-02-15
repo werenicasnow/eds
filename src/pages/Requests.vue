@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    {{$store.getters['requests/getRequestsJoinPersons']}}
     <div class="header">Корпоративный удостоверяющий центр</div>
 
     <div class="tabs">
@@ -195,6 +194,12 @@
               table-class="request-card__content__grid__body"
               :card-style="{ borderRadius: '12px' }"
             >
+              <template v-slot:body-cell-employee="props">
+                <q-td :props="props">
+                  {{ `${employeeFio(props.row.employee).lastName} ${employeeFio(props.row.employee).firstName} ${employeeFio(props.row.employee).middleName}` }}
+                </q-td>
+              </template>
+
               <template v-slot:body-cell-status="props">
                 <q-td :props="props" :class="'text-' + statusList.find(c => c.label === props.row.status).color">
                   {{ props.row.status }}
@@ -379,6 +384,9 @@
         await $store.dispatch('requests/setRequests');
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
+      const employeeFio = (id: string) => $store.getters['persons/getPersons'].find(p => p.id === id);
+
       return {
         isShowDialog,
         showDialog,
@@ -391,7 +399,8 @@
         pagination: {
           page: 1,
           rowsPerPage: 0 // 0 means all rows
-        }
+        },
+        employeeFio
       }
     },
   });

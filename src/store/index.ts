@@ -8,8 +8,8 @@ import {
 
 import persons from './persons/index'
 import requests from './requests'
-import { IPerson } from 'src/store/persons/state';
-import { IRequest } from 'src/store/requests/state';
+//import { IPerson } from 'src/store/persons/state';
+//import { IRequest } from 'src/store/requests/state';
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
@@ -28,8 +28,8 @@ export interface StateInterface {
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   example: unknown;
-  persons: IPerson[],
-  requests: IRequest[]
+  //persons: IPerson[],
+  //requests: IRequest[]
 }
 
 // provide typings for `this.$store`
