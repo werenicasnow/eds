@@ -9,6 +9,12 @@ const getters: GetterTree<IPersons, StateInterface> = {
   getPerson( context ) {
     return (id: number) => context.persons.find(p => p.id === id)
   },
+  getFioPerson( context ) {
+    return (id: number) => {
+      const person = context.persons.find(p => p.id === id);
+      return (person) ? `${person.lastName} ${person.firstName} ${person.middleName}` : ''
+    }
+  },
 };
 
 export default getters;

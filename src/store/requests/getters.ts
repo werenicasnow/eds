@@ -7,11 +7,13 @@ const getters: GetterTree<IRequests, StateInterface> = {
     return context.requests
   },
   getUserRequests( context ) {
-    console.log(111);
     return context.requests.filter(r => r.employee === 3)
   },
   getActiveRequests( context ) {
     return context.requests.filter(r => r.status !== 'Сертификат выпущен')
+  },
+  getTasks( context ) {
+    return context.requests.filter(r => r.status === 'На согласовании')
   },
 };
 

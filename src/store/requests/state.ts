@@ -3,7 +3,12 @@ export interface IRequest {
   employee: number,
   date: string,
   status: string,
-  comment: string
+  comment: string,
+  inn: string,
+  passport: string,
+  snils: string,
+  powerOfAttorneyMvm: string,
+  otherDocs: string,
 }
 
 export interface IRequests {

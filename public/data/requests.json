@@ -3,31 +3,56 @@
     "id": 1,
     "employee": 8,
     "date": "16.02.2005",
-    "status": "На согласовании"
+    "status": "На согласовании",
+    "inn": "3664069397",
+    "passport": "https://funik.ru/wp-content/uploads/2019/10/9fa484d2ac3a52e2b674-1-700x368.jpg",
+    "snils": "https://static.mk.ru/upload/entities/2020/11/14/00/articles/detailPicture/4d/74/16/ae/21d95afc2b61387f67f941a4c56ad99e.jpg",
+    "powerOfAttorneyMvm": "https://dogovor-urist.ru/images/articles/doc1.jpg",
+    "otherDocs": "https://img-cdn.tinkoffjournal.ru/i/ydkPlQ64yD4nn8lIQ5Af0Oxd2B1ochnrpgEhWPG3Jao/w:1200/aHR0cHM6Ly9pbWct/Y2RuLnRpbmtvZmZq/b3VybmFsLnJ1Ly0v/bmV3Ym9ybi1kb2N1/bWVudHNfMzMuc2Ft/bDNodmdwa2FvLmpw/Zw,https://100dorog.ru/upload/images/articles/2015/6656152-20-Rossiyanam_bolshe_ne.jpg"
   },
   {
     "id": 2,
     "employee": 2,
     "date": "16.02.2010",
-    "status": "На согласовании"
+    "status": "На согласовании",
+    "inn": "3567567567",
+    "passport": "https://funik.ru/wp-content/uploads/2019/10/9fa484d2ac3a52e2b674-1-700x368.jpg",
+    "snils": "",
+    "powerOfAttorneyMvm": "",
+    "otherDocs": ""
   },
   {
     "id": 3,
     "employee": 5,
     "date": "16.02.2020",
-    "status": "В работе"
+    "status": "В работе",
+    "inn": "235567334",
+    "passport": "http://milledi.ucoz.ru/_pu/0/97551.jpg",
+    "snils": "",
+    "powerOfAttorneyMvm": "",
+    "otherDocs": ""
   },
   {
     "id": 4,
     "employee": 3,
     "date": "16.02.2030",
     "status": "Отклонена",
-    "comment": "вы загрузили не свой паспорт"
+    "comment": "вы загрузили не свой паспорт",
+    "inn": "72342453466",
+    "passport": "https://cdni.rt.com/inotv/s/content/m/s/7/783629_1_polunin_1__cr_big.jpg",
+    "snils": "",
+    "powerOfAttorneyMvm": "",
+    "otherDocs": ""
   },
   {
     "id": 5,
     "employee": 3,
     "date": "16.02.2010",
-    "status": "Сертификат выпущен"
+    "status": "Сертификат выпущен",
+    "inn": "337265342",
+    "passport": "https://smejsa.ru/wp-content/uploads/2014/08/foto_na_pasport2.jpg",
+    "snils": "",
+    "powerOfAttorneyMvm": "",
+    "otherDocs": ""
   }
 ]

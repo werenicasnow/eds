@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <q-checkbox v-model="isAdmin" label="Администратор (временное служебное поле)"></q-checkbox>
     <div class="header">Корпоративный удостоверяющий центр</div>
 
     <div class="tabs">
@@ -72,7 +73,7 @@
       <div class="request-card">
         <div class="request-card__header">
           Заявки на выдачу ЭЦП
-          <q-btn class="btn new_request-btn" label="Заявка" icon="add" @click="showDialog" />
+          <q-btn class="btn new_request-btn" label="Заявка" icon="add" @click="showDialog()" />
         </div>
 
         <div class="request-card__list">
@@ -177,6 +178,8 @@
         <div class="request-card__list">
           <q-list>
             <q-expansion-item
+              v-for="task in tasks"
+              :key="task.id"
               expand-icon-toggle
               expand-separator
               expand-icon="chevron_right"
@@ -184,9 +187,9 @@
               expand-icon-class="text-purple"
             >
               <template v-slot:header>
-                <q-item-section>
+                <q-item-section @click="showDialog(task)">
                   <div class="task-item">
-                    Согласование заявки <span>ПетроВ Михаил Иванович</span>
+                    Согласование заявки <span>{{ employeeFio(task.employee) }}</span>
                   </div>
                 </q-item-section>
               </template>
@@ -205,11 +208,11 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref, onMounted, computed } from 'vue';
+  import { defineComponent, ref, onMounted, computed, watch } from 'vue';
   import RequestDialog from 'components/requests/RequestDialog.vue';
   import { useQuasar } from 'quasar'
   import { useStore } from 'src/store';
-  import { IPerson } from 'src/store/persons/state';
+  import { IRequest } from 'src/store/requests/state';
 
   export default defineComponent({
     name: 'Requests',
@@ -259,12 +262,26 @@
         },
       ];
 
-      const showDialog = () => {
+      const showDialog = (dataAgreement: IRequest | null = null) => {
         $q.dialog({
-          title: 'Заявка на выпуск ЭЦП',
           component: RequestDialog,
-        }).onOk(() => {
-           console.log('OK')
+          componentProps: {
+            title: dataAgreement ? 'Согласование заявки' : 'Заявка на выпуск ЭЦП',
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            dataAgreement: dataAgreement ? {...dataAgreement, ...{employeeFio: employeeFio(dataAgreement.employee)}} : null
+          }
+        }).onOk((oper) => {
+          switch (oper) {
+            case 'onAccept':
+              console.log('OK', 'accepted');
+              break;
+            case 'onReject':
+              console.log('OK', 'rejected');
+              break;
+            default:
+              console.log('OK', 'saved');
+              break;
+          }
         }).onCancel(() => {
            console.log('Cancel')
         }).onDismiss(() => {
@@ -274,7 +291,10 @@
 
       const $store = useStore();
 
-      const isAdmin = true;
+      const isAdmin = ref(false);
+
+      const activeTab = ref(isAdmin.value ? 'requestsAdmin' : 'requests');
+      watch(isAdmin, () => activeTab.value = isAdmin.value ? 'requestsAdmin' : 'requests');
 
       onMounted(async () => {
         await $store.dispatch('digitalSignatures/setDigitalSignatures');
@@ -285,17 +305,15 @@
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
       const digitalSignatures = computed(() => $store.getters['digitalSignatures/getDigitalSignatures']);
 
-      const employeeFio = (id: number) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
-        const employee: IPerson = $store.getters['persons/getPerson'](id);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        return (employee) ? `${employee.lastName} ${employee.firstName} ${employee.middleName}` : ''
-      };
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
+      const employeeFio = (id: number) => $store.getters['persons/getFioPerson'](id);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-call
       const userRequests = computed(() => $store.getters['requests/getUserRequests']);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
       const activeRequests = computed(() => $store.getters['requests/getRequests']);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
+      const tasks = computed(() => $store.getters['requests/getTasks']);
 
       const statusColor = (statusList: { label: string, color: string }[], status: string) => {
         const statusData = statusList.find(c => c.label === status);
@@ -306,7 +324,7 @@
         isShowDialog,
         showDialog,
         isAdmin,
-        activeTab: ref(isAdmin ? 'requestsAdmin' : 'requests'),
+        activeTab,
         columnsRequests,
         statusFilter,
         taskStatusList,
@@ -319,7 +337,8 @@
         digitalSignatures,
         employeeFio,
         userRequests,
-        activeRequests
+        activeRequests,
+        tasks,
       }
     },
   });
@@ -337,7 +356,7 @@
   font-style: normal
   font-weight: normal
   font-size: 16px
-  height: 100vh
+  min-height: 100vh
   color: $base-text-color
 
 .header
@@ -441,6 +460,7 @@
       letter-spacing: 0.25px
       border-radius: 12px
       margin-right: 20px
+      overflow-x: auto
 
       &__title
         line-height: 24px
@@ -512,4 +532,11 @@
     .request-card__list
       .status
         padding: 4px 5px
+
+    &__content
+      &__grid tr
+        height: 20px
+
+      &__filter
+        margin-top: 30px
 </style>
